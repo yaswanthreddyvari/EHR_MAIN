@@ -1,0 +1,35 @@
+<div class="card">
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="first_name">First Name</label>
+          <input id="first_name" type="text" pInputText formControlName="first_name" />
+        </div>
+        <div class="p-field">
+          <label for="last_name">Last Name</label>
+          <input id="last_name" type="text" pInputText formControlName="last_name" />
+        </div>
+        <div class="p-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" pInputText formControlName="email" />
+        </div>
+        <div class="p-field">
+          <label for="mobile_phone">Mobile Number</label>
+          <input id="mobile_phone" type="text" pInputText formControlName="mobile_phone" />
+        </div>
+        <div class="p-field">
+          <label for="state">State</label>
+          <input id="state" type="text" pInputText formControlName="state" />
+        </div>
+        <div class="p-field">
+          <label for="status">Status</label>
+          <p-dropdown [options]="statusOptions" formControlName="status" optionLabel="label" optionValue="value"></p-dropdown>
+        </div>
+        <div class="p-field">
+          <button type="submit" pButton label="Update Patient"></button>
+        </div>
+      </div>
+
+      
+    </form>
+  </div>
