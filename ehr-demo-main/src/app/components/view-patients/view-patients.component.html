@@ -14,7 +14,7 @@
       <!-- Table Caption -->
       <ng-template #caption>
         <div class="flex items-center">
-          <h5>Patient List</h5>
+          <h5 class="font-bold">Patient List</h5>
           <div class="flex items-center gap-sm ml-auto">
             <!-- Filter by State -->
             <p-columnFilter
@@ -72,20 +72,17 @@
           <td>{{ patient.mobile_phone }}</td>
           <td>{{ patient.state }}</td>
           <td>
-            <p-tag
-              [value]="patient.status ? 'Active' : 'Inactive'"
-              [severity]="patient.status ? 'success' : 'danger'"
-            ></p-tag>
+              {{ patient.status ? 'Active' : 'Inactive'}}
           </td>
           <td>
             <div class="flex gap-base">
               <!-- Edit Button -->
-              <div class="cursor-pointer">
-                <i class="pi pi-pencil text-blue-700"  (click) = "editPatient(patient)"></i>
+              <div class="cursor-pointer"  (click) = "editPatient(patient._id)">
+                <i class="pi pi-pencil text-blue-700"  ></i>
               </div>
               <!-- Delete Button -->
               <div class="cursor-pointer">
-                <i class="pi pi-trash text-red-500" (click) = "deletePatient(patient._id)"></i>
+                <i class="pi pi-trash text-red-500"  (click) = "deletePatient(patient._id)"></i>
               </div>
             </div>
           </td>

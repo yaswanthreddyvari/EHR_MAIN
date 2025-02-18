@@ -4,14 +4,13 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ViewPatientsComponent } from './components/view-patients/view-patients.component';
 import { PatientFormComponent } from './components/patient-form/patient-form.component';
-import { EditPatientComponent } from './components/edit-patient/edit-patient.component';
+
 
 export const routes: Routes = [
     {path :'',component: LoginComponent},
     {path :'register',component: RegistrationComponent},
     {path :'login',component: LoginComponent},
-    {path: 'edit-patient/:id', component:EditPatientComponent},
-
+    // {path: 'edit-patient/:id', component:PatientFormComponent},
 
    // {path :'dashboard',component: DashboardComponent},
     {
@@ -25,6 +24,11 @@ export const routes: Routes = [
           {
             path: 'patientForm',
             component: PatientFormComponent, // another child route component that the router renders
+          },
+
+          {
+            path: 'edit-patient/:id',
+            component: PatientFormComponent,
           },
         ],
       },

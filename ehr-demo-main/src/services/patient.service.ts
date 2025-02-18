@@ -20,11 +20,13 @@ export class PatientService {
   }
 
   updatePatient(id: string, patientData: any): Observable<any>{
-    return this.http.put('${this.apiUrl}/${id}',patientData);
+    return this.http.put(`${this.apiUrl}/${id}`,patientData);
   }
 
-  getPatientById(id: string): Observable<any> {
-    return this.http.get('${this.apiUrl}/${id}');
+  getPatientById(patientId: string): Observable<any> {
+    const url = `${this.apiUrl}/${patientId}`;
+    console.log('Fetching patient from:', url); // Debugging
+    return this.http.get<any>(url);
   }
 
   deletePatient(id: string): Observable<any> {

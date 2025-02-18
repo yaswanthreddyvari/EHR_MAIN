@@ -21,7 +21,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ListboxModule } from 'primeng/listbox';
 import { DrawerModule } from 'primeng/drawer';
-import { RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -58,6 +58,8 @@ export class PatientFormComponent implements OnInit {
   };
 submitted: any;
 f: any;
+  patientId!: string;
+  isEditMode = false;
   onStatusChange(event: any) {console.log('Status changed:', this.patient.status ? 'Active' : 'Inactive');}
 
   cities = [
@@ -80,11 +82,42 @@ f: any;
 
   constructor(
     private patientService: PatientService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.patientId = params.get('id')!; // Get the patient ID from the route
+      if (this.patientId) {
+        this.isEditMode = true; // Set the form to edit mode
+        this.loadPatientDetails(this.patientId); // Load the patient's details
+      }
+    });
+  }
+  loadPatientDetails(patientId: string): void {
+    this.patientService.getPatientById(patientId).subscribe(
+  (response : any)=>{
+    if(response && response.data){
+      this.patient = {
+        ...response.data, // Spread the patient data
+        city: { name: response.data.city }, // Convert city string to object
+        state: { name: response.data.state }, // Convert state string to object
+        country: { name: response.data.country }, // Convert country string to object
+        dob: new Date(response.data.dob), // Convert string to Date object
+        status: Boolean(response.data.status),
+      };
+    }else{
+      console.error("Patient not Found");
+    }
+  },
+  (error: any)=>{
+         console.error("Error fetching patient data :",error);
+  }
+  );
+  }
 
   onSubmit(): void {
     const payload = {
@@ -92,28 +125,52 @@ f: any;
       city: this.patient.city.name,
       state: this.patient.state.name,
       country: this.patient.country.name,
+      status: this.patient.status,
     };
   
-    console.log('Form Submitted', payload);
-    this.patientService.createPatient(payload).subscribe({
-      next: (response) => {
-        console.log('Patient created successfully', response);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Patient created successfully!',
-        });
-        this.resetForm();
-      },
-      error: (error) => {
-        console.error('Error creating patient', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create patient. Please try again.',
-        });
-      },
-    });
+    if (this.isEditMode && this.patientId) {
+      // Update existing patient
+      this.patientService.updatePatient(this.patientId, payload).subscribe({
+        next: (response) => {
+          console.log('Patient updated successfully', response);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Patient updated successfully!',
+          });
+          this.router.navigate(['/dashboard/viewPatients']); // Navigate back to the patient list
+        },
+        error: (error) => {
+          console.error('Error updating patient', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update patient. Please try again.',
+          });
+        },
+      });
+    } else {
+      // Create new patient
+      this.patientService.createPatient(payload).subscribe({
+        next: (response) => {
+          console.log('Patient created successfully', response);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Patient created successfully!',
+          });
+          this.resetForm();
+        },
+        error: (error) => {
+          console.error('Error creating patient', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to create patient. Please try again.',
+          });
+        },
+      });
+    }
   }
   
   resetForm(): void {

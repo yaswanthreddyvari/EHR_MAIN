@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-view-patients',
-  imports: [FormsModule,NgFor, DropdownModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule, ReactiveFormsModule],
+  imports: [FormsModule, DropdownModule,ButtonModule, SelectButtonModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,IconFieldModule, InputIconModule, DrawerModule, ReactiveFormsModule],
   templateUrl: './view-patients.component.html',
   standalone: true,
   styleUrl: './view-patients.component.scss'
@@ -136,8 +136,8 @@ export class ViewPatientsComponent implements OnInit {
     this.fetchPatients();
   }
 
-  editPatient(patient: any): void {
-    this.router.navigate(['/edit-patient', patient._id]);
+  editPatient(patientId: string): void {
+    this.router.navigate(['/dashboard/edit-patient', patientId]);
   }
 
    // Delete a patient

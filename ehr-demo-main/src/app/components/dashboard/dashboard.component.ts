@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { PrimeNG } from 'primeng/config';
 import { AvatarModule } from 'primeng/avatar';
@@ -26,6 +26,7 @@ import { RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { PatientFormComponent } from '../patient-form/patient-form.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +35,40 @@ import { PatientFormComponent } from '../patient-form/patient-form.component';
   standalone: true,
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
-items: MenuItem[]|undefined;
 
+export class DashboardComponent implements OnInit {
+  items: MenuItem[] = []; // Menu items for the dropdown
+  userEmail: string = ''; // Logged-in user's email
+  userEmailInitial: string = ''; // Initial for the avatar
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    // Fetch the logged-in user's email (example)
+    this.userEmail = this.authService.getUserEmail(); // Replace with your logic
+    this.userEmailInitial = this.userEmail.charAt(0).toUpperCase(); // Get the first letter for the avatar
+
+    // Define menu items
+    this.items = [
+      {
+        label: this.userEmail, // Display the user's email
+        icon: 'pi pi-user',
+        disabled: true, // Disable clicking on the email
+      },
+      {
+        separator: true, // Add a separator
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout(), // Call the logout method
+      },
+    ];
+  }
+
+  // Logout method
+  logout(): void {
+    this.authService.logout(); // Call your logout service
+    this.router.navigate(['/login']); // Redirect to the login page
+  }
 }

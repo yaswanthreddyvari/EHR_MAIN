@@ -1,7 +1,7 @@
 // services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 
 @Injectable({
@@ -16,7 +16,44 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
+  // login(email: string, password: string): Observable<any> {
+    
+  //   return this.http.post(`${this.apiUrl}/login`, { email, password });
+  // }
+
+  // getUserEmail(): string {
+  //   // Replace with your actual logic to get the user's email
+  //   return 'user@example.com';
+  // }
+
+  // // Example method to handle logout
+  // logout(): void {
+  //   // Clear user session or token
+  //   localStorage.removeItem('authToken'); // Example
+  // }
+
+
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password });
+    return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap((response: any) => {
+        if (response.success) {
+          // Store user email and token in local storage
+          localStorage.setItem('userEmail', response.data.email);
+          localStorage.setItem('authToken', response.data.token);
+        }
+      })
+    );
+  }
+
+  getUserEmail(): string {
+    // Get the user's email from local storage
+    return localStorage.getItem('userEmail') || '';
+  }
+
+  // Example method to handle logout
+  logout(): void {
+    // Clear user session or token
+    localStorage.removeItem('authToken'); // Example
+    localStorage.removeItem('userEmail'); // Clear the email as well
   }
 }
